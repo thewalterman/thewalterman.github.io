@@ -1,0 +1,24 @@
+# Hugo
+public/
+resources/_gen/
+.hugo_build.lock
+hugo_stats.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Node (if using npm for assets)
+node_modules/
+package-lock.json
+
+# Environment
+.env
+.env.local

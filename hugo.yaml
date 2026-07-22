@@ -1,0 +1,104 @@
+baseURL: https://thewalterman.github.io/
+title: thewalterman's blog
+theme: ["PaperMod"]
+
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: true
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+params:
+  env: production
+  author: "Walter Lomonaco"
+  defaultTheme: auto
+  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: false
+  ShowCodeCopyButtons: true
+  ShowToc: true
+  TocOpen: false
+  ShowRssButtonInSectionTermList: false
+
+  profileMode:
+    enabled: false
+    title: "Walter Lomonaco"
+    imageTitle: "Profile"
+    imageWidth: 150
+    imageHeight: 150
+    buttons:
+      - name: Blog
+        url: /posts/
+      - name: About
+        url: /about/
+
+  socialIcons:
+    - name: github
+      url: "https://github.com/thewalterman"
+    - name: linkedin
+      url: "https://linkedin.com/in/walter-lomonaco-14712b162"
+    - name: email
+      url: "mailto:walter.lomonaco@gmail.com"
+
+  cover:
+    linkFullImages: true
+
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    keys: ["title", "permalink", "summary", "content"]
+
+languages:
+  en:
+    languageCode: en-us
+    languageName: English
+    weight: 1
+    menu:
+      main:
+        - identifier: about
+          name: About
+          pageRef: /about
+          weight: 10
+        - identifier: search
+          name: Search
+          pageRef: /search
+          weight: 20
+        - identifier: tags
+          name: Tags
+          pageRef: /tags
+          weight: 30
+  it:
+    languageCode: it-it
+    languageName: Italiano
+    weight: 2
+    menu:
+      main:
+        - identifier: about
+          name: Chi sono
+          pageRef: /about
+          weight: 10
+        - identifier: search
+          name: Cerca
+          pageRef: /search
+          weight: 20
+        - identifier: tags
+          name: Tag
+          pageRef: /tags
+          weight: 30
