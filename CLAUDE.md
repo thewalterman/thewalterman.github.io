@@ -23,7 +23,7 @@ Hugo static site with the PaperMod theme (git submodule at `themes/PaperMod`). B
 
 **Content** lives in `content/` and is bilingual (English + Italian). English posts are `filename.md`; Italian translations are `filename.it.md`. Content sections: `posts/`, `projects/`, `about`, `archives`, `search`.
 
-**Layouts** in `layouts/` override PaperMod defaults. Custom CSS is in `assets/css/extended/custom.css` — the `extended/` subdir appends to PaperMod's base CSS rather than replacing it. The custom `layouts/partials/header.html` adds scroll-position restoration on language switch.
+**Layouts** in `layouts/` override PaperMod defaults. Custom CSS is in `assets/css/extended/custom.css` — the `extended/` subdir appends to PaperMod's base CSS rather than replacing it. The custom `layouts/partials/header.html` adds scroll-position restoration on language switch; `layouts/partials/templates/schema_json.html` overrides PaperMod's JSON-LD schema partial.
 
 **Config** is `hugo.yaml` — single file for all Hugo config including both language menus, PaperMod params, and output formats. The `search` page uses client-side Fuse.js against the JSON output format (`outputs.home: [HTML, RSS, JSON]`); tune matching via `params.fuseOpts`.
 

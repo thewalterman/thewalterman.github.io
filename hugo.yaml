@@ -49,7 +49,7 @@ params:
     - name: github
       url: "https://github.com/thewalterman"
     - name: linkedin
-      url: "https://linkedin.com/in/walter-lomonaco-14712b162"
+      url: "https://linkedin.com/in/walter-lomonaco"
     - name: email
       url: "mailto:walter.lomonaco@gmail.com"
 

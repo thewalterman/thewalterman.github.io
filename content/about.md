@@ -33,4 +33,4 @@ I'm a strong advocate for:
 
 I'm always happy to connect with fellow engineers and discuss DevOps, cloud architecture, or anything tech-related.
 
-Feel free to reach out via [email](mailto:walter.lomonaco@gmail.com) or connect with me on [LinkedIn](https://linkedin.com/in/walter-lomonaco-14712b162).
+Feel free to reach out via [email](mailto:walter.lomonaco@gmail.com) or connect with me on [LinkedIn](https://linkedin.com/in/walter-lomonaco).
