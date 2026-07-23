@@ -70,35 +70,51 @@ languages:
     languageCode: en-us
     languageName: English
     weight: 1
+    params:
+      homeInfoParams:
+        Title: "Hi there"
+        Content: "Welcome to thewalterman's blog — notes and write-ups on software and whatever else I'm tinkering with."
     menu:
       main:
         - identifier: about
           name: About
           pageRef: /about
           weight: 10
-        - identifier: search
-          name: Search
-          pageRef: /search
+        - identifier: archives
+          name: Archive
+          pageRef: /archives
           weight: 20
         - identifier: tags
           name: Tags
           pageRef: /tags
           weight: 30
+        - identifier: search
+          name: Search
+          pageRef: /search
+          weight: 40
   it:
     languageCode: it-it
     languageName: Italiano
     weight: 2
+    params:
+      homeInfoParams:
+        Title: "Ciao"
+        Content: "Benvenuti nel blog di thewalterman — appunti e articoli su software e altro."
     menu:
       main:
         - identifier: about
           name: Chi sono
           pageRef: /about
           weight: 10
-        - identifier: search
-          name: Cerca
-          pageRef: /search
+        - identifier: archives
+          name: Archivio
+          pageRef: /archives
           weight: 20
         - identifier: tags
           name: Tag
           pageRef: /tags
           weight: 30
+        - identifier: search
+          name: Cerca
+          pageRef: /search
+          weight: 40

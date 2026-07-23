@@ -2,6 +2,7 @@
 title: "About Me"
 summary: "About thewalterman"
 ShowToc: false
+showSocialIcons: true
 ---
 
 ## Hi, I'm Walter
@@ -32,5 +33,3 @@ I'm a strong advocate for:
 ## Get in Touch
 
 I'm always happy to connect with fellow engineers and discuss DevOps, cloud architecture, or anything tech-related.
-
-Feel free to reach out via [email](mailto:walter.lomonaco@gmail.com) or connect with me on [LinkedIn](https://linkedin.com/in/walter-lomonaco).

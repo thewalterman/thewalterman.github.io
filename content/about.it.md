@@ -2,6 +2,7 @@
 title: "Chi sono"
 summary: "Chi è thewalterman"
 ShowToc: false
+showSocialIcons: true
 ---
 
 ## Ciao, sono Walter
@@ -32,5 +33,3 @@ Sono un forte sostenitore di:
 ## Contattami
 
 Sono sempre felice di entrare in contatto con altri engineer e discutere di DevOps, architetture cloud, o qualsiasi argomento tech.
-
-Scrivimi via [email](mailto:walter.lomonaco@gmail.com) o connettiti con me su [LinkedIn](https://linkedin.com/in/walter-lomonaco-14712b162).
