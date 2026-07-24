@@ -32,6 +32,7 @@ params:
   ShowToc: true
   TocOpen: false
   ShowRssButtonInSectionTermList: false
+  hideFooter: true
 
   profileMode:
     enabled: false

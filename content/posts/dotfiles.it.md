@@ -52,14 +52,14 @@ Da zero a produttivo con un solo comando.
 Invece di gestire Node con `nvm`, Python con `pyenv`, e così via, uso [mise](https://mise.jdx.dev/). Un singolo `config.toml` fissa le versioni di tutto:
 
 - Runtime: Node 24
-- Kubernetes/DevOps: kubectl, helm, k9s, jq, yq
+- Kubernetes/DevOps: kubectl, helm, k9s, jq, yq, stern
 - Editor: neovim (latest)
 - Produttività: lazygit, lazydocker, yazi
-- Utility: ast-grep, chezmoi, usage
+- Utility: ast-grep, chezmoi, tree-sitter, usage
 
 `mise install` e il gioco è fatto. Niente più "funziona sulla mia macchina" per il tooling.
 
-### Fish shell + Tide
+### Fish shell + pure
 
 Fish offre autosuggestions ed evidenziazione della sintassi out of the box. Faccio largo uso di `abbr` (abbreviazioni) invece degli alias — si espandono inline, così vedi sempre il comando completo prima che venga eseguito.
 
@@ -74,7 +74,7 @@ abbr -a --set-cursor='%' -- kr 'kubectl run -it --rm --restart=Never --image=% -
 
 Il flag `--set-cursor` è un trucco specifico di Fish che posiziona il cursore a metà espansione — utile per i messaggi di commit, dove si finisce sempre a scrivere nello stesso punto.
 
-[Tide](https://github.com/ilancosman/tide) fornisce il prompt tramite Fisher — mostra branch e stato git, contesto Kubernetes e durata dei comandi senza rumore di configurazione.
+Ho sostituito il prompt di default con [pure](https://github.com/pure-fish/pure) — minimale di default, e ogni comportamento è una variabile universale `pure_*` invece che una config file. Tengo `fish_variables` versionato anche nel repo di dotfiles.
 
 ### Neovim (LazyVim)
 
@@ -157,6 +157,6 @@ Tutto qui. Ambiente completo in pochi minuti.
 
 ## Conclusione
 
-Un buon setup di dotfiles è invisibile quando funziona — ti siedi davanti a una nuova macchina e sembra già casa tua. chezmoi gestisce la meccanica, mise fissa il tooling, Fish + Tide mantengono la shell veloce e informativa. L'investimento iniziale è qualche ora; il ritorno è su ogni macchina, per sempre.
+Un buon setup di dotfiles è invisibile quando funziona — ti siedi davanti a una nuova macchina e sembra già casa tua. chezmoi gestisce la meccanica, mise fissa il tooling, Fish + pure mantengono la shell veloce e informativa. L'investimento iniziale è qualche ora; il ritorno è su ogni macchina, per sempre.
 
 Se sei curioso, il setup completo è su GitHub all'indirizzo [thewalterman/dotfiles](https://github.com/thewalterman/dotfiles).

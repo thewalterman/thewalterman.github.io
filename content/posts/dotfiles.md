@@ -52,14 +52,14 @@ From zero to productive in one command.
 Instead of managing Node via `nvm`, Python via `pyenv`, and so on, I use [mise](https://mise.jdx.dev/). A single `config.toml` pins versions for everything:
 
 - Runtimes: Node 24
-- Kubernetes/DevOps: kubectl, helm, k9s, jq, yq
+- Kubernetes/DevOps: kubectl, helm, k9s, jq, yq, stern
 - Editor: neovim (latest)
 - Productivity: lazygit, lazydocker, yazi
-- Utilities: ast-grep, chezmoi, usage
+- Utilities: ast-grep, chezmoi, tree-sitter, usage
 
 `mise install` and you're done. No more "works on my machine" for tooling.
 
-### Fish shell + Tide
+### Fish shell + pure
 
 Fish gives me autosuggestions and syntax highlighting out of the box. I lean heavily on `abbr` (abbreviations) rather than aliases — they expand inline so you always see the full command before it runs.
 
@@ -74,7 +74,7 @@ abbr -a --set-cursor='%' -- kr 'kubectl run -it --rm --restart=Never --image=% -
 
 The `--set-cursor` flag is a Fish-specific trick that positions the cursor mid-expansion — useful for commit messages where you always end up typing in the same spot.
 
-[Tide](https://github.com/ilancosman/tide) provides the prompt via Fisher — showing git branch and status, Kubernetes context, and command duration without configuration noise.
+I replaced the default prompt with [pure](https://github.com/pure-fish/pure) — minimal by default, and every bit of behavior is a `pure_*` universal variable rather than a config file. I track `fish_variables` in the dotfiles repo too.
 
 ### Neovim (LazyVim)
 
@@ -157,6 +157,6 @@ That's it. Full environment in minutes.
 
 ## Conclusion
 
-A good dotfiles setup is invisible when it works — you sit down at a new machine and it just feels like home. chezmoi handles the mechanics, mise pins the tooling, and Fish + Tide keep the shell fast and informative. The upfront investment is a few hours; the payoff is every machine, forever.
+A good dotfiles setup is invisible when it works — you sit down at a new machine and it just feels like home. chezmoi handles the mechanics, mise pins the tooling, and Fish + pure keep the shell fast and informative. The upfront investment is a few hours; the payoff is every machine, forever.
 
 If you're curious, the full setup is on GitHub at [thewalterman/dotfiles](https://github.com/thewalterman/dotfiles).
