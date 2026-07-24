@@ -75,6 +75,21 @@ a:hover { text-decoration: underline; }
 /* Menu */
 #menu a { font-weight: 500; }
 
+/* Sticky sidebar TOC on wide screens */
+@media (min-width: 1400px) {
+    details.toc {
+        position: fixed;
+        top: 84px;
+        left: calc(50% + 390px);
+        width: 260px;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+        z-index: 10;
+        margin-bottom: 0;
+    }
+
+}
+
 /* Light mode code blocks - invert colors */
 html:not([data-theme="dark"]) .highlight {
     filter: invert(1) hue-rotate(180deg);

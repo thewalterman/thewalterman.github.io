@@ -30,7 +30,7 @@ params:
   ShowBreadCrumbs: false
   ShowCodeCopyButtons: true
   ShowToc: true
-  TocOpen: false
+  TocOpen: true
   ShowRssButtonInSectionTermList: false
   hideFooter: true
 
