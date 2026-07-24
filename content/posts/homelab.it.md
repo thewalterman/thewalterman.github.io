@@ -60,7 +60,7 @@ Un `ResourceSet` Flux in `configurations/base/` si auto-gestisce la `HelmRelease
 Il cluster k3d è progettato per rispecchiare la topologia di produzione il più fedelmente possibile senza accesso a internet. Tutti i task di setup vengono eseguiti tramite [mise](https://mise.jdx.dev), che gestisce le versioni degli strumenti e carica le variabili d'ambiente. Tre dettagli non ovvi rendono il dev locale funzionante correttamente:
 
 - **mkcert CA**: `mise run k3d-create` genera una CA locale con [mkcert](https://github.com/FiloSottile/mkcert), installata sull'host e importata come TLS Secret così l'issuer cert-manager di k3d può firmarci il certificato wildcard. Ogni pod che esegue una propria chiamata di OIDC discovery verso Keycloak (Grafana, ad esempio) monta la stessa CA nel proprio trust store tramite un secret volume aggiuntivo — senza di essa, la validazione TLS dell'issuer URL auto-firmato fallisce.
-- **hostAliases**: `k3d.yaml` mappa `keycloak.homelab.localhost → 172.28.0.1` (il gateway del bridge Docker). Senza questa configurazione, i pod non possono risolvere l'URL Keycloak usato per l'OIDC discovery, poiché quell'hostname è risolvibile solo dall'host.
+- **hostAliases**: `k3d.yaml` mappa l'URL di Keycloak a `172.28.0.1` (il gateway del bridge Docker). Senza questa configurazione, i pod non possono risolvere l'URL Keycloak usato per l'OIDC discovery, poiché quell'hostname è risolvibile solo dall'host.
 - **Registry cache**: i pull da Docker Hub vengono proxati attraverso una cache locale (`docker-io:5000`), evitando i limiti di rate durante lo sviluppo iterativo.
 
 ---
@@ -71,27 +71,7 @@ Invece del classico `Ingress` di Kubernetes, questo setup usa la **Gateway API**
 
 [Envoy Gateway](https://gateway.envoyproxy.io/) funge da **controller GatewayClass**, e una singola risorsa `Gateway` gestisce tutto il traffico HTTPS del cluster. In k3d, il Gateway ascolta su `*.homelab.localhost` quindi non è necessario modificare `/etc/hosts`.
 
-Ogni applicazione riceve un `HTTPRoute` che punta al suo servizio backend:
-
-```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  parentRefs:
-    - name: gateway
-      namespace: default
-  hostnames:
-    - grafana.homelab.localhost
-  rules:
-    - backendRefs:
-        - name: kube-prometheus-stack-grafana
-          port: 80
-```
-
-Pulito, dichiarativo e con scope di namespace — esattamente come la Gateway API è stata progettata.
+Ogni applicazione ha bisogno di un `HTTPRoute` agganciato al `Gateway` condiviso. Dove possibile, viene generato direttamente dai values della Helm chart in alternativa viene definito un `HTTPRoute` manualmente.
 
 ---
 
@@ -252,7 +232,7 @@ Flux stesso è strumentato: PodMonitor dedicati coprono tutti e sei i controller
 
 ### Aggregazione dei Log: Loki + Fluent Bit
 
-[Loki](https://grafana.com/oss/loki) gira in modalità SingleBinary — una replica, persistenza su filesystem su un PVC. È volutamente semplice: l'alta disponibilità sul log store non è un requisito homelab, e SingleBinary evita il sovraccarico operativo di componenti separati per lettura/scrittura/backend. I log sono interrogabili in Grafana tramite LogQL attraverso un datasource preconfigurato.
+[Loki](https://grafana.com/oss/loki) gira in modalità Monolithic — una replica, persistenza su filesystem su un PVC. È volutamente semplice: l'alta disponibilità sul log store non è un requisito homelab, e SingleBinary evita il sovraccarico operativo di componenti separati per lettura/scrittura/backend. I log sono interrogabili in Grafana tramite LogQL attraverso un datasource preconfigurato.
 
 **Fluent Operator** gestisce Fluent Bit attraverso CRD Kubernetes (`FluentBit`, `ClusterFilter`, `ClusterOutput`) invece di una ConfigMap grezza. Le regole di routing dei log sono risorse Kubernetes versionabili; aggiungere un filtro o cambiare il target di output non richiede di toccare la specifica del DaemonSet — Fluent Operator riconcilia automaticamente la configurazione di Fluent Bit. Il DaemonSet legge dal socket dei log di containerd su ogni nodo e invia all'API push di Loki. Entrambi i componenti espongono ServiceMonitor così Prometheus raccoglie anche le loro metriche interne.
 

@@ -60,7 +60,7 @@ A Flux `ResourceSet` in `configurations/base/` self-manages the flux-operator `H
 The k3d cluster is designed to mirror production topology as closely as possible without internet access. All setup tasks run through [mise](https://mise.jdx.dev), which pins tool versions and loads environment variables. Three non-obvious details make local dev work correctly:
 
 - **mkcert CA**: `mise run k3d-create` generates a local CA with [mkcert](https://github.com/FiloSottile/mkcert), installed on the host and imported as a TLS Secret so cert-manager's k3d issuer can sign the wildcard certificate from it. Any pod that performs its own OIDC discovery call against Keycloak (Grafana, for instance) mounts that same CA into its trust store via an extra secret volume — without it, TLS verification of the self-signed issuer URL fails.
-- **hostAliases**: `k3d.yaml` maps `keycloak.homelab.localhost → 172.28.0.1` (the Docker bridge gateway). Without it, pods cannot resolve the Keycloak URL used for OIDC discovery, since that hostname is only resolvable from the host.
+- **hostAliases**: `k3d.yaml` maps Keycloak URL to `172.28.0.1` (the Docker bridge gateway). Without it, pods cannot resolve the Keycloak URL used for OIDC discovery, since that hostname is only resolvable from the host.
 - **Registry cache**: Docker Hub pulls are proxied through a local registry cache (`docker-io:5000`), avoiding rate limits during iterative development.
 
 ---
@@ -71,27 +71,7 @@ Rather than the classic Kubernetes `Ingress`, this setup uses the **Gateway API*
 
 [Envoy Gateway](https://gateway.envoyproxy.io/) acts as the **GatewayClass controller**, and a single `Gateway` resource handles all HTTPS traffic for the cluster. In k3d, the Gateway listens on `*.homelab.localhost` so you don't need to edit `/etc/hosts`.
 
-Each application gets an `HTTPRoute` pointing to its backend service:
-
-```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  parentRefs:
-    - name: gateway
-      namespace: default
-  hostnames:
-    - grafana.homelab.localhost
-  rules:
-    - backendRefs:
-        - name: kube-prometheus-stack-grafana
-          port: 80
-```
-
-This is clean, declarative, and namespace-scoped — exactly as the Gateway API was designed
+Each application needs an `HTTPRoute` attached to the shared `Gateway`. Where possible, it is generated directly from the Helm chart values, alternatively an `HTTPRoute` is defined manually.
 
 ---
 
@@ -252,7 +232,7 @@ Flux itself is instrumented: dedicated PodMonitors cover all six Flux controller
 
 ### Log Aggregation: Loki + Fluent Bit
 
-[Loki](https://grafana.com/oss/loki) runs in SingleBinary mode — one replica, filesystem persistence on a PVC. It's deliberately simple: high availability on the log store isn't a homelab requirement, and SingleBinary avoids the operational overhead of separate read/write/backend components. Logs are queryable in Grafana through LogQL via a preconfigured datasource.
+[Loki](https://grafana.com/oss/loki) runs in Monolithic mode — one replica, filesystem persistence on a PVC. It's deliberately simple: high availability on the log store isn't a homelab requirement, and SingleBinary avoids the operational overhead of separate read/write/backend components. Logs are queryable in Grafana through LogQL via a preconfigured datasource.
 
 **Fluent Operator** manages Fluent Bit through Kubernetes CRDs (`FluentBit`, `ClusterFilter`, `ClusterOutput`) rather than a raw ConfigMap. Log routing rules are version-controlled Kubernetes resources; adding a filter or changing the output target doesn't require touching the DaemonSet spec — Fluent Operator reconciles the Fluent Bit configuration automatically. The DaemonSet reads from containerd's log socket on each node and ships to Loki's push API. Both components expose ServiceMonitors so Prometheus scrapes their own metrics alongside application logs.
 
