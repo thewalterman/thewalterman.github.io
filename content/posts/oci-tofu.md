@@ -122,6 +122,25 @@ resource "oci_kms_key" "key" {
 
 Alongside it, one Object Storage bucket (`NoPublicAccess`, no versioning, Standard tier) exists purely as a backup target — the thing CNPG ship snapshots into, and the thing the k3s embedded-etcd datastore can be pointed at directly through its S3-compatible endpoint. That second path is worth calling out: etcd's own snapshot upload doesn't understand instance principals, only static access/secret keys — an OCI "Customer Secret Key" generated under a user, not an API key and not the dynamic group above. It's the one place in this whole setup that still needs a credential sitting in a config file instead of an identity.
 
+`secrets.tf` has the secrets of the vault as `oci_vault_secret`, `for_each` over a `vault_secrets` map, imported into state the same way the original compute instance was:
+
+```hcl
+locals {
+  vault_secret_names = nonsensitive(toset(keys(var.vault_secrets)))
+}
+
+resource "oci_vault_secret" "secret" {
+  for_each    = local.vault_secret_names
+  secret_name = each.value
+  secret_content {
+    content_type = "BASE64"
+    content      = base64encode(var.vault_secrets[each.value].content)
+  }
+}
+```
+
+`vault_secrets` holds plaintext in `terraform.tfvars` — Tofu base64-encodes it, so nobody has to hand-encode a secret before pasting it in. It's marked `sensitive`, which creates one wrinkle: `for_each` can't take a sensitive value directly, so the key set (secret *names*, not their content) gets peeled off with `nonsensitive(toset(keys(...)))` before use. And because OCI's API never returns secret content back, `tofu plan` always shows these seven as an in-place update — a new secret version, not a change to what's live — every single time, forever. That's not drift to chase down, just how write-only fields look in a diff.
+
 ---
 
 ## Ansible: Patching and Bootstrapping, Deliberately Separate from Tofu
@@ -155,7 +174,7 @@ ansible-playbook -i inventory.yml bootstrap-k3s.yml
 | Compute | OpenTofu | ARM `A1.Flex` instance(s), `for_each` over `k3s_nodes` |
 | Network | OpenTofu | VCN, subnet, shared default security list, two leftover NSGs |
 | IAM | OpenTofu | Self-building dynamic group, secret/vault/backup-bucket policies |
-| Secrets | OpenTofu | KMS vault + AES-256 key |
+| Secrets | OpenTofu | KMS vault + AES-256 key, `oci_vault_secret` per entry in `vault_secrets` |
 | Backups | OpenTofu | Object Storage bucket (backups) |
 | OS maintenance | Ansible | apt upgrade/autoremove/autoclean, conditional reboot |
 | k3s lifecycle | Ansible | k3s-ansible collection, version-pinned install/upgrade |

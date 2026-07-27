@@ -122,6 +122,25 @@ resource "oci_kms_key" "key" {
 
 Accanto ad esso, un bucket Object Storage (`NoPublicAccess`, senza versioning, tier Standard) esiste puramente come destinazione di backup — dove CNPG invia gli snapshot, e dove il datastore etcd embedded di k3s può puntare direttamente tramite il suo endpoint S3-compatibile. Questo secondo percorso merita una menzione a parte: l'upload degli snapshot di etcd non capisce gli instance principal, solo chiavi di accesso/segreto statiche — una "Customer Secret Key" OCI generata sotto un utente, non una API key e non il dynamic group di cui sopra. È l'unico punto di tutto questo setup dove serve ancora una credenziale ferma in un file di configurazione invece di un'identità.
 
+`secrets.tf` possiede i segreti del vault come `oci_vault_secret`, `for_each` su una mappa `vault_secrets`, importati nello state con lo stesso approccio usato per l'istanza compute originale:
+
+```hcl
+locals {
+  vault_secret_names = nonsensitive(toset(keys(var.vault_secrets)))
+}
+
+resource "oci_vault_secret" "secret" {
+  for_each    = local.vault_secret_names
+  secret_name = each.value
+  secret_content {
+    content_type = "BASE64"
+    content      = base64encode(var.vault_secrets[each.value].content)
+  }
+}
+```
+
+`vault_secrets` contiene testo in chiaro in `terraform.tfvars` — a codificarlo in base64 ci pensa Tofu, così nessuno deve farlo a mano prima di incollare un segreto. È marcata `sensitive`, il che crea una piccola complicazione: `for_each` non può prendere direttamente un valore sensitive, quindi il set delle chiavi (i *nomi* dei segreti, non il loro contenuto) viene isolato con `nonsensitive(toset(keys(...)))` prima dell'uso. E poiché l'API di OCI non restituisce mai indietro il contenuto di un secret, `tofu plan` mostra sempre questi sette come un aggiornamento in-place — una nuova versione del secret, non una modifica a ciò che è live — ogni singola volta, per sempre. Non è drift da inseguire, è solo l'aspetto che ha un campo write-only in un diff.
+
 ---
 
 ## Ansible: Patching e Bootstrap, Deliberatamente Separati da Tofu
@@ -155,7 +174,7 @@ ansible-playbook -i inventory.yml bootstrap-k3s.yml
 | Compute | OpenTofu | Istanza/e ARM `A1.Flex`, `for_each` su `k3s_nodes` |
 | Rete | OpenTofu | VCN, subnet, security list di default condivisa, due NSG residue |
 | IAM | OpenTofu | Dynamic group auto-costruito, policy per segreti/vault/bucket di backup |
-| Segreti | OpenTofu | Vault KMS + chiave AES-256 |
+| Segreti | OpenTofu | Vault KMS + chiave AES-256, `oci_vault_secret` per ogni voce in `vault_secrets` |
 | Backup | OpenTofu | Bucket Object Storage (backup) |
 | Manutenzione OS | Ansible | apt upgrade/autoremove/autoclean, reboot condizionale |
 | Ciclo di vita k3s | Ansible | Collection k3s-ansible, install/upgrade con versione pinnata |
