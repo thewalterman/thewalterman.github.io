@@ -72,6 +72,17 @@ a:hover { text-decoration: underline; }
     background: var(--theme);
 }
 
+/* Offset anchor targets so the sticky header doesn't cover them */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6,
+.post-content [id] {
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
 /* Menu */
 #menu a { font-weight: 500; }
 

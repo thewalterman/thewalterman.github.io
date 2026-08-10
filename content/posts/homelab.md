@@ -38,7 +38,7 @@ The repository is organized around five top-level sections:
 clusters/        # Flux Kustomization entry points and FluxInstance per target
 infrastructure/  # Envoy Gateway, cert-manager, External Secrets Operator
 apps/            # Keycloak, OpenBao, CNPG, RustFS
-monitoring/      # Prometheus, Grafana, Loki, Fluent Bit
+monitoring/      # Prometheus, Grafana, Loki, Fluent Bit, Kubescape
 configurations/  # Gateway, HTTPRoutes, Issuers, ExternalSecrets, PodMonitors
 ```
 
@@ -236,6 +236,16 @@ Flux itself is instrumented: dedicated PodMonitors cover all six Flux controller
 
 **Fluent Operator** manages Fluent Bit through Kubernetes CRDs (`FluentBit`, `ClusterFilter`, `ClusterOutput`) rather than a raw ConfigMap. Log routing rules are version-controlled Kubernetes resources; adding a filter or changing the output target doesn't require touching the DaemonSet spec — Fluent Operator reconciles the Fluent Bit configuration automatically. The DaemonSet reads from containerd's log socket on each node and ships to Loki's push API. Both components expose ServiceMonitors so Prometheus scrapes their own metrics alongside application logs.
 
+### Security Posture: Kubescape
+
+[Kubescape](https://kubescape.io) is a CNCF project that scans a cluster's configuration against security frameworks like NSA and MITRE ATT&CK, and can also watch container behavior at runtime via eBPF — the kind of posture check that's easy to skip on a homelab, and just as easy to regret skipping.
+
+The `kubescape-operator` Helm chart bundles a lot more than compliance scanning by default: an image vulnerability scanner (`kubevuln`), plus several other runtime capabilities (node profiling, network policy generation, an admission webhook) — most of it enabled out of the box. None of that is proportionate to a single-node cluster running a known, already-scanned set of workloads, so the deployment turns on exactly three capabilities — `configurationScan`, `prometheusExporter`, and `runtimeDetection` — and explicitly disables the rest.
+
+`configurationScan` results land in a small aggregated API server the chart deploys (`spdx.softwarecomposition.kubescape.io`), queryable with plain `kubectl get workloadconfigurationscansummaries`. Its `prometheusExporter` metrics feed a `PrometheusRule` that pages on critical findings, a rising high-severity trend, or the scan pipeline going quiet.
+
+`runtimeDetection` takes a different path entirely: an `node-agent` DaemonSet evaluates the chart's default rule library (crypto miners, suspicious exec, ptrace abuse, sensitive-file access — bound cluster-wide out of the box) against live container behavior, and sends matches straight to Alertmanager.
+
 ---
 
 ## Bootstrap: From Zero to Running Cluster
@@ -295,6 +305,7 @@ Looking at this setup as a whole, a few clear principles emerge:
 | Alertmanager | Alert routing (k3s only) |
 | Loki | Log aggregation |
 | Fluent Bit | Log collection and shipping (Fluent Operator) |
+| Kubescape | Cluster configuration scanning |
 
 ---
 
