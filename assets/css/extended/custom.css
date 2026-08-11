@@ -86,6 +86,24 @@ a:hover { text-decoration: underline; }
 /* Menu */
 #menu a { font-weight: 500; }
 
+/* Keep header on a single row on narrow screens: let the menu scroll
+   horizontally instead of wrapping under the logo */
+.header-nav {
+    flex-wrap: nowrap;
+}
+
+.header-nav .menu {
+    min-width: 0;
+}
+
+.header-nav .logo {
+    flex-shrink: 0;
+}
+
+.header-nav .logo a {
+    white-space: nowrap;
+}
+
 /* Sticky sidebar TOC on wide screens */
 @media (min-width: 1400px) {
     details.toc {
