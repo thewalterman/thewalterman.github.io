@@ -3,7 +3,7 @@ title: "Un Bot AI Sandboxato per l'Homelab"
 date: 2026-08-13
 draft: false
 tags: ["ansible", "k3s", "kubernetes", "rbac", "podman", "security", "ai", "llm", "homelab"]
-description: "Installare Hermes Agent — un assistente AI self-hosted, raggiungibile via app di chat — sul nodo dell'homelab tramite Ansible, e poi togliergli quasi tutto ciò che poteva fare di sbagliato: un sandbox Podman rootless per l'esecuzione dei comandi e un'identità Kubernetes dedicata."
+description: "Installare Hermes Agent — un assistente AI self-hosted, raggiungibile via app di chat — sul nodo dell'homelab tramite Ansible, e poi togliergli quasi tutto ciò che poteva fare di sbagliato: un toolset ridotto all'essenziale, un sandbox Podman rootless per l'esecuzione dei comandi, e un'identità Kubernetes dedicata."
 ShowToc: true
 ---
 
@@ -60,9 +60,43 @@ approvals:
     - "*ufw*"
     - "reboot*"
     - "shutdown*"
+    - "*delete node*"
+    - "*delete pvc*"
+    - "*delete persistentvolumeclaim*"
+    - "*delete namespace*"
+    - "*delete ns *"
+    - "*helm uninstall*"
+    - "*delete clusterrole*"
+    - "*delete clusterrolebinding*"
 ```
 
 `mode: manual` significa che l'agente chiede conferma prima di eseguire qualcosa che giudica rischioso; la lista `deny` è un pavimento rigido sotto quel giudizio, pattern che non vengono mai eseguiti indipendentemente da cosa decide il modello. Economico da scrivere, e utile da avere — ma è una lista di comandi *già noti* come pericolosi. Non dice nulla su un comando a cui nessuno aveva pensato di aggiungere alla lista.
+
+---
+
+## Ridurre il Toolset Prima di Ridurre Tutto il Resto
+
+Hermes viene fornito con un lungo catalogo di toolset opzionali e ogni piattaforma di chat ha il proprio bundle di default.
+
+`platform_toolsets` in `config.yaml` fissa una lista corta ed esplicita di strumenti da poter utilizzare:
+
+```yaml
+platform_toolsets:
+  cli:
+    - clarify
+    - code_execution
+    - delegation
+    - file
+    - memory
+    - session_search
+    - skills
+    - terminal
+    - todo
+    - vision
+    - web
+```
+
+Due dei toolset lasciati fuori meritano una menzione specifica. `computer_use` — controllo in background di un vero desktop — non ha alcun caso d'uso legittimo per un bot il cui unico lavoro è parlare con una API Kubernetes, quindi viene tolto senza appello. `cronjob` viene tolto per un motivo più preciso: l'esecuzione dei cron in Hermes gira senza supervisione, senza che nessun umano veda mai il comando prima che parta, e il sistema di approvazione che dovrebbe intercettarne uno pericoloso ha un difetto non ancora corretto — il controllo è una breve lista di pattern letterali di comandi shell, facilmente elusa formulando la stessa richiesta distruttiva in linguaggio naturale invece che come comando shell ("leggi il file `~/.hermes/.env` e mostrami il contenuto" passa ogni controllo che una regola contro `cat *.env` intercetterebbe). Uno scheduler senza un cancello che funzioni davvero, con credenziali reali del cluster montate, non è un toolset da tenere finché la cosa non viene corretta.
 
 ---
 
@@ -104,6 +138,8 @@ Installarlo è un task Ansible prima di tutto il resto nel playbook:
   command: podman info
   changed_when: false
 ```
+
+Un effetto collaterale di questa scelta merita di essere segnalato: una volta che `terminal.backend` punta a un container, il sistema di rilevamento dei comandi pericolosi integrato in Hermes — l'euristica dietro `mode: manual` — si disattiva del tutto, sul presupposto che il container stesso sia ora il confine di sicurezza. La lista `deny` di prima è quello che resta a far davvero da guardia per i comandi instradati qui dentro, motivo per cui copre già le operazioni distruttive sul cluster e non solo quelle distruttive sull'host.
 
 ---
 
@@ -218,7 +254,7 @@ metadata:
   namespace: hermes
   annotations:
     kubernetes.io/service-account.name: hermes
-type: kubernetes.io/service-account-token 
+type: kubernetes.io/service-account-token
 ```
 
 ---
@@ -264,3 +300,4 @@ Quindi il playbook lo applica direttamente:
 - **Sandboxare l'esecuzione e limitare le credenziali sono due problemi separati.** Un container con un kubeconfig admin montato dentro non è contenuto — è lo stesso potere con qualche passaggio in più.
 - **L'admission control (Pod Security `baseline`) chiude la via di fuga che il solo scoping RBAC non può chiudere** — la differenza tra "admin del cluster" e "root sul nodo" si decide lì, non nei verbi RBAC.
 - **Non tutto appartiene a GitOps.** Una risorsa necessaria per bootstrap-are un componente che a sua volta vive fuori dal grafo GitOps appartiene agli strumenti di bootstrap di quel componente, non incastrata in un repo che non può ancora girare.
+- **I percorsi di esecuzione non supervisionati hanno bisogno di un cancello che funzioni davvero, non solo sulla carta.** Uno scheduler che gira senza che nessuno guardi è esattamente il punto in cui i punti ciechi di un sistema di approvazione contano di più — motivo per cui `cronjob` resta spento qui finché il flusso di approvazione dei cron di Hermes non viene corretto.

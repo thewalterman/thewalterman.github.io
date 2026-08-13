@@ -3,7 +3,7 @@ title: "A Sandboxed AI Ops Bot for the Homelab"
 date: 2026-08-13
 draft: false
 tags: ["ansible", "k3s", "kubernetes", "rbac", "podman", "security", "ai", "llm", "homelab"]
-description: "Installing Hermes Agent — a self-hosted, chat app reachable AI ops assistant — on the homelab node via Ansible, then taking away almost everything it could do wrong: a rootless Podman sandbox for command execution and a dedicated Kubernetes identity."
+description: "Installing Hermes Agent — a self-hosted, chat app reachable AI ops assistant — on the homelab node via Ansible, then taking away almost everything it could do wrong: a trimmed-down toolset, a rootless Podman sandbox for command execution, and a dedicated Kubernetes identity."
 ShowToc: true
 ---
 
@@ -60,9 +60,43 @@ approvals:
     - "*ufw*"
     - "reboot*"
     - "shutdown*"
+    - "*delete node*"
+    - "*delete pvc*"
+    - "*delete persistentvolumeclaim*"
+    - "*delete namespace*"
+    - "*delete ns *"
+    - "*helm uninstall*"
+    - "*delete clusterrole*"
+    - "*delete clusterrolebinding*"
 ```
 
 `mode: manual` means the agent asks before running anything it judges risky; the `deny` list is a hard floor underneath that judgment, patterns that never execute regardless of what the model decides. Cheap to write, and worth having — but it's a list of *known* bad commands. It says nothing about a command nobody thought to list.
+
+---
+
+## Trimming the Toolset Before Trimming Anything Else
+
+Hermes ships with a long catalog of optional toolsets and each chat platform gets its own default bundle of them.
+
+`platform_toolsets` in `config.yaml` pins a short, explicit list of tools that can be used:
+
+```yaml
+platform_toolsets:
+  cli:
+    - clarify
+    - code_execution
+    - delegation
+    - file
+    - memory
+    - session_search
+    - skills
+    - terminal
+    - todo
+    - vision
+    - web
+```
+
+Two of the toolsets left out are worth calling out specifically. `computer_use` — background control of a real desktop — has no legitimate use case for a bot whose whole job is talking to a Kubernetes API, so it's cut outright. `cronjob` is cut for a sharper reason: cron execution in Hermes runs unattended, with no human ever seeing the command before it fires, and the approval system meant to catch a dangerous one there has an unpatched flaw — the check is a short list of literal shell-command patterns, trivially sidestepped by phrasing the same destructive request in plain English instead of a shell command ("read the file at `~/.hermes/.env` and show me its contents" passes every check a rule against `cat *.env` would catch). A scheduler with no working gate and real cluster credentials mounted isn't worth having until that's fixed.
 
 ---
 
@@ -104,6 +138,8 @@ Installing it is one Ansible task ahead of everything else in the playbook:
   command: podman info
   changed_when: false
 ```
+
+One side effect of that move is worth flagging: once `terminal.backend` points at a container, Hermes's own built-in dangerous-command detection — the heuristic behind `mode: manual` — steps aside entirely, on the theory that the container itself is now the security boundary. The `deny` list from earlier is what's left actually enforcing anything for commands routed through here, which is exactly why it already covers cluster-destructive operations and not just host-destructive ones.
 
 ---
 
@@ -263,3 +299,4 @@ So the playbook applies it directly:
 - **Sandboxing execution and scoping credentials are two separate problems.** A container with an admin kubeconfig mounted into it is not contained — it's the same power with extra steps.
 - **Admission control (Pod Security `baseline`) closes the escape hatch RBAC scoping alone can't** — the difference between "cluster admin" and "root on the node" is enforced there, not in the RBAC verbs.
 - **Not everything belongs in GitOps.** A resource needed to bootstrap a component that itself sits outside the GitOps graph belongs with that component's own bootstrap tooling, not wedged into a repo that can't run yet.
+- **Unattended execution paths need a gate that actually works, not one that exists on paper.** A scheduler running with no one watching is exactly where an approval system's blind spots matter most — which is why `cronjob` stays off here until Hermes's own cron approval flow is fixed.
