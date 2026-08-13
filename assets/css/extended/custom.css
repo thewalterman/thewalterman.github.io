@@ -108,15 +108,31 @@ a:hover { text-decoration: underline; }
 @media (min-width: 1400px) {
     details.toc {
         position: fixed;
-        top: 84px;
-        left: calc(50% + 390px);
+        top: 130px;
+        left: calc(75% + 45px);
         width: 260px;
-        max-height: calc(100vh - 110px);
+        max-height: calc(100vh - 156px);
         overflow-y: auto;
         z-index: 10;
         margin-bottom: 0;
     }
 
+}
+
+/* Sticky post nav (prev/next) on wide screens, mirroring the TOC on the left */
+@media (min-width: 1400px) {
+    .paginav {
+        position: fixed;
+        top: 130px;
+        left: calc(25% - 305px);
+        width: 260px;
+        flex-direction: column;
+        z-index: 10;
+    }
+
+    .paginav a {
+        width: 100%;
+    }
 }
 
 /* Light mode code blocks - invert colors */

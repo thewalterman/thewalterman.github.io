@@ -7,7 +7,7 @@ description: "Chiudere le porte pubbliche rimaste aperte sul nodo dell'homelab �
 ShowToc: true
 ---
 
-L'[homelab](/posts/homelab/) e la sua [infrastruttura OCI](/posts/oci-tofu/) girano con due porte aperte verso internet: la 443, proxata da Cloudflare ma comunque raggiungibile direttamente sul nodo dietro di essa, e la 22, SSH in chiaro sull'IP pubblico. Entrambe restavano superficie d'attacco che non aveva motivo di esistere. Questo è il racconto della chiusura di entrambe — una porta alla volta, con una deviazione di debugging su ciascuna.
+L'[homelab](/posts/homelab/) e la sua [infrastruttura OCI](/posts/homelab-infra/) girano con due porte aperte verso internet: la 443, proxata da Cloudflare ma comunque raggiungibile direttamente sul nodo dietro di essa, e la 22, SSH in chiaro sull'IP pubblico. Entrambe restavano superficie d'attacco che non aveva motivo di esistere. Questo è il racconto della chiusura di entrambe — una porta alla volta, con una deviazione di debugging su ciascuna.
 
 ---
 

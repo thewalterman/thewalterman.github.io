@@ -7,7 +7,7 @@ description: "Closing the public ports left open on the homelab node — 443 beh
 ShowToc: true
 ---
 
-The [homelab](/posts/homelab/) and its [OCI infrastructure](/posts/oci-tofu/) have been running with two ports open to the internet: 443, proxied through Cloudflare but still reachable directly on the node behind it, and 22, plain SSH on the public IP. Both were still attack surface that didn't need to exist. This is the writeup of closing both — one port at a time, with a debugging detour on each.
+The [homelab](/posts/homelab/) and its [OCI infrastructure](/posts/homelab-infra/) have been running with two ports open to the internet: 443, proxied through Cloudflare but still reachable directly on the node behind it, and 22, plain SSH on the public IP. Both were still attack surface that didn't need to exist. This is the writeup of closing both — one port at a time, with a debugging detour on each.
 
 ---
 
