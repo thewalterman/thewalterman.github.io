@@ -163,7 +163,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
     ingress = [
       {
         hostname = "*.example.com"
-        service  = "https://envoy-gateway.envoy-gateway-system.svc.cluster.local:443"
+        service  = "https://envoy-gateway-proxy.envoy-gateway-system.svc.cluster.local:443"
         origin_request = {
           origin_server_name = "tunnel.example.com"
         }
@@ -184,11 +184,11 @@ k3s itself is installed and upgraded entirely outside any of these three roots â
 
 ```bash
 # OS-level maintenance
-ansible-playbook -i inventory.yml update.yml
+ansible-playbook -i ansible/inventory.yml ansible/update.yml
 
 # (Re-)install k3s via the external k3s-ansible collection
-ansible-galaxy collection install -r requirements.yml
-ansible-playbook -i inventory.yml bootstrap-k3s.yml
+ansible-galaxy collection install -r ansible/requirements.yml
+ansible-playbook -i ansible/inventory.yml ansible/bootstrap-k3s.yml
 ```
 
 Both playbooks now proxy SSH through the Tailscale sidecar rather than reaching the node's public IP directly on 22, since that ingress rule no longer exists (`ansible_ssh_common_args` with a `docker exec -i tailscale nc %h %p` `ProxyCommand`) â€” the sidecar has to be up and authenticated before either runs. The sharp edges inside `bootstrap-k3s.yml` are unchanged: `token` must match what's already on the node or a real run silently rewrites the cluster's join token, and `server_config_yaml` must mirror `/etc/rancher/k3s/config.yaml` byte-for-byte in intent, since a real run always overwrites that file from the variable rather than merging it.

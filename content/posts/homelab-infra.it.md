@@ -163,7 +163,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
     ingress = [
       {
         hostname = "*.example.com"
-        service  = "https://envoy-gateway.envoy-gateway-system.svc.cluster.local:443"
+        service  = "https://envoy-gateway-proxy.envoy-gateway-system.svc.cluster.local:443"
         origin_request = {
           origin_server_name = "tunnel.example.com"
         }
@@ -184,11 +184,11 @@ k3s in sé viene installato e aggiornato interamente al di fuori di questi tre r
 
 ```bash
 # Manutenzione a livello OS
-ansible-playbook -i inventory.yml update.yml
+ansible-playbook -i ansible/inventory.yml ansible/update.yml
 
 # (Re-)installa k3s tramite la collection esterna k3s-ansible
-ansible-galaxy collection install -r requirements.yml
-ansible-playbook -i inventory.yml bootstrap-k3s.yml
+ansible-galaxy collection install -r ansible/requirements.yml
+ansible-playbook -i ansible/inventory.yml ansible/bootstrap-k3s.yml
 ```
 
 Entrambi i playbook ora instradano SSH attraverso il sidecar Tailscale invece di raggiungere direttamente l'IP pubblico del nodo sulla 22, dato che quella regola di ingress non esiste più (`ansible_ssh_common_args` con un `ProxyCommand` `docker exec -i tailscale nc %h %p`) — il sidecar deve essere attivo e autenticato prima di eseguire uno dei due. Gli spigoli vivi dentro `bootstrap-k3s.yml` restano invariati: `token` deve corrispondere a quello già presente sul nodo o un run reale riscrive silenziosamente il join token del cluster, e `server_config_yaml` deve rispecchiare `/etc/rancher/k3s/config.yaml` byte per byte nell'intento, perché un run reale sovrascrive sempre quel file a partire dalla variabile invece di unirlo.
@@ -215,6 +215,6 @@ Entrambi i playbook ora instradano SSH attraverso il sidecar Tailscale invece di
 
 Nessuno dei singoli pezzi è entusiasmante — una VM, una policy di tailnet, un allowlist WAF. Ciò che vale la pena raccontare è che ciascuno ha il proprio state e il proprio compito ristretto.
 
-Il compito di OpenTofu in `oci/` finisce nel momento in cui l'istanza e la sua identità esistono; quello di `tailscale/` finisce alla configurazione del tailnet stesso; quello di `cloudflare/` finisce a DNS ed edge. 
+Il compito di OpenTofu in `oci/` finisce nel momento in cui l'istanza e la sua identità esistono; quello di `tailscale/` finisce alla configurazione del tailnet stesso; quello di `cloudflare/` finisce a DNS ed edge.
 
 Ansible prende in carico da lì per portare k3s in esecuzione, e tutto ciò che è descritto nel [post sull'homelab](/posts/homelab/) — Flux, Keycloak — parte una volta completato quel passaggio di consegne. Quattro responsabilità ristrette, quattro confini puliti.
