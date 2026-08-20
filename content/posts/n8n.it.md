@@ -71,7 +71,7 @@ Traefik, l'ingress predefinito di k3s, è esplicitamente disabilitato — lo sta
 Sette release vengono deployate in ordine di dipendenza:
 
 | Release | Namespace | Scopo |
-|---|---|---|
+| --- | --- | --- |
 | `cert-manager` | `cert-manager` | Emissione di certificati TLS con supporto Gateway API |
 | `envoy-gateway` | `envoy-gateway-system` | Implementazione Gateway API basata su Envoy (v1.8.1) |
 | `cnpg` | `cnpg-system` | Operatore CloudNative PostgreSQL |
@@ -97,50 +97,51 @@ Questo installa il chart Helm di LLMKube e applica `model.yaml` in un solo passo
 
 ## n8n in queue mode
 
-La queue mode è il modello di esecuzione di produzione per n8n. Invece che il processo principale esegua i workflow direttamente, pod worker dedicati prelevano i job da una coda Bull supportata da Valkey (un fork di Redis). I pod webhook gestiscono in modo indipendente i trigger HTTP in ingresso.
+La queue mode è il modello di esecuzione di produzione per n8n. Invece che il processo principale esegua i workflow direttamente, pod worker dedicati prelevano i job da una coda Bull supportata da Valkey (un fork di Redis). Un deployment separato di webhook-processor gestisce in modo indipendente i trigger HTTP in ingresso, così un picco di traffico webhook non compete mai con il carico dell'editor/API sul pod main.
 
 ```yaml
-worker:
-  mode: queue
-  allNodes: true   # DaemonSet — un worker per nodo agent
+queueMode:
+  enabled: true
+  workerReplicaCount: 3
 
-webhook:
-  mode: queue
-  allNodes: true
+webhookProcessor:
+  enabled: true
+  replicaCount: 3
+  disableProductionWebhooksOnMainProcess: true
 ```
 
-`allNodes: true` deploya sia worker che webhook come DaemonSet. Ogni nodo agent esegue un worker, il che significa che l'esecuzione dei workflow scala orizzontalmente con il cluster.
+Entrambi i replica count sono impostati a 3, in linea con i tre nodi agent del cluster. Il chart deploya worker e webhook processor come normali `Deployment` con un numero fisso di repliche invece di fissare un pod per nodo — non esiste una modalità DaemonSet — quindi si tratta di una scelta di dimensionamento, non di una topologia imposta. `disableProductionWebhooksOnMainProcess` impedisce al pod main di gestire anche il traffico webhook di produzione una volta che i pod processor dedicati se ne fanno carico.
 
 ### Task runner esterni
 
-Il modello di task runner di n8n isola l'esecuzione del codice (JavaScript, Python) in processi separati. Il chart supporta una modalità `external` in cui ogni pod worker esegue un container sidecar `n8n-task-runners`.
-
-Dalla versione 1.23.x del chart, abilitare Python insieme a JavaScript richiede solo due valori:
+Il modello di task runner di n8n isola l'esecuzione del codice (JavaScript, Python) in processi separati. Il chart esegue un sidecar `task-runner` accanto ai container main e worker — non al webhook-processor, che non esegue mai nodi Code:
 
 ```yaml
-nodes:
-  python:
-    enabled: true
-
 taskRunners:
-  mode: external
-  external:
-    image:
-      tag: "2.27.3-distroless"
+  enabled: true
+  nativePythonRunner: true
+  image:
+    repository: n8nio/runners
+    tag: "2.27.3-distroless"
 ```
 
-Impostare `nodes.python.enabled: true` con `taskRunners.mode: external` dice al chart di configurare nativamente il sidecar per entrambi i runtime — nessun post-renderer necessario. Viene impostata anche la variabile d'ambiente `N8N_NATIVE_PYTHON_RUNNER: true`, richiesta da n8n ≥ 1.111.0 per attivare l'esecuzione Python. Il tag dell'immagine distroless è fissato esplicitamente per allinearlo alla versione dell'immagine n8n e mantenere l'immagine rafforzata (senza shell, senza package manager).
+`nativePythonRunner: true` è il valore predefinito e imposta automaticamente `N8N_NATIVE_PYTHON_RUNNER` su ogni pod che riceve il sidecar — nessun post-renderer o configurazione custom del launcher necessaria per nessuno dei due linguaggi. Il tag dell'immagine distroless è fissato esplicitamente per allinearlo alla versione dell'immagine n8n e mantenere l'immagine rafforzata (senza shell, senza package manager).
+
+Il broker con cui dialoga il sidecar è autenticato: il chart genera un `N8N_RUNNERS_AUTH_TOKEN` casuale alla prima installazione, lo salva in un Secret (`n8n-task-runners`) e lo riutilizza tra un upgrade e l'altro tramite la funzione `lookup` di Helm, così un rolling update della release non invalida i runner in esecuzione.
 
 Le definizioni dei runner per entrambi i linguaggi sono già incluse in `/etc/n8n-task-runners.json` all'interno dell'immagine.
 
 ### Binary data in modalità database
 
-n8n supporta diversi backend per lo storage dei dati binari. Il campo `binaryData.mode` del chart accetta solo `default`, `filesystem` o `s3` — ma `filesystem` è incompatibile con la queue mode (i worker su nodi diversi non possono condividere un filesystem locale). La modalità corretta per questo setup è `database`, che salva i dati binari come BLOB in PostgreSQL.
+n8n supporta diversi backend per lo storage dei dati binari. La configurazione di storage nativa del chart copre solo `filesystem` e `s3` — ma `filesystem` è incompatibile con la queue mode (worker e webhook processor su pod diversi non possono condividere un disco locale). La modalità corretta per questo setup è `database`, che salva i dati binari come BLOB in PostgreSQL.
 
-Poiché il chart non espone `database` come valore enum valido, viene impostato tramite variabile d'ambiente su tutti e tre i tipi di pod:
+Non essendoci un campo strutturato dedicato, viene impostata come variabile d'ambiente grezza tramite `config.extraEnv`, applicata in modo identico ai deployment main, worker e webhook-processor:
 
 ```yaml
-N8N_DEFAULT_BINARY_DATA_MODE: database
+config:
+  extraEnv:
+    - name: N8N_DEFAULT_BINARY_DATA_MODE
+      value: "database"
 ```
 
 ---
@@ -152,7 +153,7 @@ La catena TLS è:
 1. **mkcert** genera una CA locale e la installa nel trust store di sistema e dei browser. Il certificato e la chiave della CA vengono salvati nel Secret `cert-manager/ca-cert` dall'hook presync di `cert-manager`.
 2. **cert-manager** usa un `ClusterIssuer` supportato da quel secret per emettere un certificato wildcard per `*.homelab.localhost`, salvato nel Secret `default/gateway-cert`.
 3. **Envoy Gateway** termina il TLS sulla porta 443 usando quel certificato.
-4. Un **HTTPRoute** instrada `n8n.homelab.localhost` verso il servizio n8n sulla porta 5678.
+4. Due regole **HTTPRoute** dividono il traffico verso `n8n.homelab.localhost` tra i due deployment di n8n esposti da un servizio: i path di webhook, form e MCP vanno al servizio webhook-processor, tutto il resto va al servizio main.
 
 Poiché la CA di mkcert viene aggiunta automaticamente al trust store di sistema, il certificato è attendibile da browser e curl senza alcuna configurazione manuale.
 
@@ -178,13 +179,34 @@ rules:
     matches:
       - path:
           type: PathPrefix
+          value: /webhook/
+      - path:
+          type: PathPrefix
+          value: /webhook-waiting/
+      - path:
+          type: PathPrefix
+          value: /form/
+      - path:
+          type: PathPrefix
+          value: /form-waiting/
+      - path:
+          type: PathPrefix
+          value: /mcp/
+    backendRefs:
+      - name: n8n-webhook-processor
+        port: 5678
+  - timeouts:
+      request: 0s
+    matches:
+      - path:
+          type: PathPrefix
           value: /
     backendRefs:
-      - name: n8n
+      - name: n8n-main
         port: 5678
 ```
 
-Senza questa configurazione, Envoy chiude il WebSocket allo scadere del timeout idle predefinito e l'interfaccia inizia a mostrare errori di connessione. Questo sostituisce la CRD Envoy-specifica `BackendTrafficPolicy` che era precedentemente necessaria per ottenere lo stesso effetto.
+Questa suddivisione dei path rispecchia il routing che il chart stesso configurerebbe con un normale `Ingress` Kubernetes, reimplementato come regole Gateway API dato che Envoy Gateway usa `HTTPRoute`. Senza l'override del timeout a `0s`, Envoy chiude il WebSocket allo scadere del timeout idle predefinito e l'interfaccia inizia a mostrare errori di connessione. Questo sostituisce la CRD Envoy-specifica `BackendTrafficPolicy` che era precedentemente necessaria per ottenere lo stesso effetto.
 
 ---
 
@@ -205,27 +227,28 @@ N8N_ENCRYPTION_KEY=<openssl rand -hex 32>
 
 mise carica questo file automaticamente tramite `_.file = ".env"` in `mise.toml`. Gli hook presync di helmfile creano poi i secret Kubernetes a partire da questi valori — nessun comando `kubectl` manuale è necessario.
 
-Quattro segreti vengono utilizzati a runtime:
+Cinque segreti vengono utilizzati a runtime:
 
 - **`ca-cert`** (`cert-manager`): certificato e chiave della CA mkcert. cert-manager li legge per firmare il certificato TLS wildcard.
-- **`valkey-auth`**: contiene `redis-password`. Usato sia dal chart Valkey (autenticazione ACL) che dal chart n8n (`externalRedis.existingSecret`).
-- **`n8n-encryption-key`**: usato per cifrare le credenziali salvate a riposo. Perdere questa chiave rende irrecuperabili tutte le credenziali salvate — va trattata come una master password.
-- **`n8n-cnpg-cluster-app`**: creato automaticamente dall'operatore CNPG. Contiene la chiave `password` per l'utente database di n8n. Il chart n8n ha una particolarità: normalmente legge `postgres-password` dal secret, ma impostare `postgresql.auth.username: n8n` con `postgresql.enabled: false` lo costringe a leggere `password`, che è quello che CNPG genera effettivamente.
+- **`valkey-auth`**: contiene `redis-password`. Usato sia dal chart Valkey (autenticazione ACL) che dal chart n8n (`redis.passwordSecret`).
+- **`n8n-core-secrets`**: contiene `N8N_ENCRYPTION_KEY`, `N8N_HOST`, `N8N_PORT` e `N8N_PROTOCOL`. Il chart ha hardcoded il lookup di tutte e quattro le chiavi su questo unico secret (`secretRefs.existingSecret`), quindi devono esistere tutte anche se solo la chiave di cifratura è realmente sensibile. Perdere `N8N_ENCRYPTION_KEY` rende irrecuperabili tutte le credenziali salvate — va trattata come una master password.
+- **`n8n-cnpg-cluster-app`**: creato automaticamente dall'operatore CNPG. Contiene la chiave `password` per l'utente database di n8n, consumata direttamente da `database.passwordSecret` — nessuna particolarità da gestire.
+- **`n8n-task-runners`**: generato dal chart stesso, non da un hook di helmfile. Contiene il token casuale `N8N_RUNNERS_AUTH_TOKEN` usato dai sidecar task-runner per autenticarsi al broker nei container main/worker.
 
 ---
 
 ## Hardening della sicurezza
 
-Diverse misure di sicurezza vengono applicate su tutti i tipi di pod:
+Diverse misure di sicurezza vengono applicate su tutti i tipi di pod, per lo più come variabili d'ambiente grezze sotto `config.extraEnv` dato che il chart non le espone come campi dedicati:
 
 | Misura | Valore |
-|---|---|
-| REST API pubblica | Disabilitata (`api.enabled: false`) |
+| --- | --- |
+| REST API pubblica | Disabilitata (`N8N_PUBLIC_API_DISABLED: true`) |
 | Community packages | Disabilitati |
 | Protezione SSRF | Abilitata — blocca le richieste agli indirizzi RFC 1918 / loopback dai nodi workflow |
 | Cookie sicuro | Abilitato — HTTPS-only, SameSite-strict |
 | Telemetria | Completamente disabilitata (diagnostics, notifiche di versione, template fetching, frontend hooks) |
-| Sidecar task runner | Immagine distroless, UID 65532, filesystem in sola lettura, nessuna capability Linux |
+| Sidecar task runner | Immagine distroless, non-root (UID 1000 tramite il security context del pod), nessuna privilege escalation, tutte le capability Linux rimosse |
 
 La protezione SSRF merita attenzione in un contesto homelab: senza di essa, un nodo workflow potrebbe fare richieste HTTP ad altri servizi della rete locale (NAS, pannello admin del router, altri servizi Kubernetes). Abilitarla blocca questa classe di attacchi anche dai workflow scritti in proprio — un guardrail utile.
 
@@ -233,7 +256,7 @@ La protezione SSRF merita attenzione in un contesto homelab: senza di essa, un n
 
 ## Predisposizione al monitoraggio
 
-Il `ServiceMonitor` è disabilitato per impostazione predefinita (`serviceMonitor.enabled: false` in `n8n.yaml`). Per attivare la raccolta delle metriche Prometheus, impostarlo a `true` e deployare `kube-prometheus-stack` nel namespace `monitoring` — nessun'altra riconfigurazione di n8n è necessaria.
+Il chart non include alcun template `ServiceMonitor`, quindi la raccolta delle metriche non è predisposta di default. Per attivarla bisogna deployare `kube-prometheus-stack` nel namespace `monitoring` e aggiungere un `ServiceMonitor` scritto a mano tramite un hook postsync di helmfile, allo stesso modo in cui oggi viene applicato l'`HTTPRoute` per n8n.
 
 ---
 
@@ -291,8 +314,10 @@ Conviene usare il nome DNS interno di Kubernetes invece del hostname esterno. Da
 **Attenzione alla protezione SSRF**: `N8N_SSRF_PROTECTION_ENABLED: true` blocca le richieste HTTP verso indirizzi RFC 1918, che include il CIDR dei servizi del cluster. L'URL del servizio diretto sopra sarà bloccato per impostazione predefinita. Per consentirlo, usare `N8N_SSRF_ALLOWED_HOSTNAMES` in `n8n.yaml`:
 
 ```yaml
-extraEnvVars:
-  N8N_SSRF_ALLOWED_HOSTNAMES: gemma-e2b-service.llmkube-system.svc.cluster.local
+config:
+  extraEnv:
+    - name: N8N_SSRF_ALLOWED_HOSTNAMES
+      value: gemma-e2b-service.llmkube-system.svc.cluster.local
 ```
 
 L'hostname allowlist ha precedenza sul blocco degli IP, quindi n8n salta completamente il controllo RFC 1918 per questo host. Il DNS interno di Kubernetes è interamente sotto il nostro controllo, che è esattamente il caso d'uso per cui questo tipo di allowlist è pensato.
@@ -303,6 +328,6 @@ Con questa configurazione, qualsiasi nodo n8n che accetta una credenziale OpenAI
 
 ## Conclusioni
 
-Questo setup tratta un deployment homelab locale con la stessa serietà di uno di produzione. Queue mode con worker DaemonSet, segreti cifrati, protezione SSRF, un gateway Envoy appropriato, task runner isolati in container distroless — niente di tutto ciò è strettamente necessario per un'installazione locale a singolo utente, ma è tutto buona pratica e costa quasi nulla con un approccio dichiarativo.
+Questo setup tratta un deployment homelab locale con la stessa serietà di uno di produzione. Queue mode con pod worker e webhook-processor dedicati, segreti cifrati, protezione SSRF, un gateway Envoy appropriato, task runner isolati e autenticati in container distroless — niente di tutto ciò è strettamente necessario per un'installazione locale a singolo utente, ma è tutto buona pratica e costa quasi nulla con un approccio dichiarativo.
 
 Il layer LLMKube aggiunge un servizio di inferenza locale che si innesta nel sistema di credenziali OpenAI già presente in n8n. I workflow che usano nodi AI girano interamente nel cluster: nessuna API key, nessuna chiamata esterna, nessun dato che esce dalla macchina. L'estensione pgvector nel cluster PostgreSQL è già lì se si vuole aggiungere un vector store al setup.
