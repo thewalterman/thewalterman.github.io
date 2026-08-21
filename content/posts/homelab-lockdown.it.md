@@ -121,16 +121,6 @@ services:
     restart: unless-stopped
 ```
 
-### Un container usa-e-getta che condivide la rete del sidecar
-
-Serve un container con un client SSH che condivida il network namespace del sidecar, lanciato contro l'IP Tailscale del nodo:
-
-```bash
-docker run --rm -it --network container:tailscale kroniak/ssh-client ssh ubuntu@<ip-tailscale>
-```
-
-`--network container:tailscale` condivide interfacce e rotte con il sidecar — stessa idea del network namespace condiviso tra container in un pod Kubernetes.
-
 ### Il bug: userspace networking
 
 La connessione TCP andava in timeout puro — niente "connection refused," niente richiesta di password, silenzio totale. Diagnosi:

@@ -121,16 +121,6 @@ services:
     restart: unless-stopped
 ```
 
-### A throwaway container sharing the sidecar's network
-
-What's needed is a container with an SSH client sharing the sidecar's network namespace, run against the node's Tailscale IP:
-
-```bash
-docker run --rm -it --network container:tailscale kroniak/ssh-client ssh ubuntu@<tailscale-ip>
-```
-
-`--network container:tailscale` shares interfaces and routes with the sidecar — the same idea as a Kubernetes pod's shared network namespace between containers.
-
 ### The bug: userspace networking
 
 The TCP connection just timed out — no "connection refused," no password prompt, total silence. Diagnosis:
