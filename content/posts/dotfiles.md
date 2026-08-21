@@ -86,15 +86,6 @@ I use [LazyVim](https://www.lazyvim.org/) as a base and add a small set of plugi
 - **snacks** — fuzzy picker configured to include hidden files by default
 - **tokyonight** — theme in transparent mode so the terminal background shows through
 
-### k9s
-
-[k9s](https://k9scli.io/) is a terminal UI for Kubernetes. My config adds:
-
-- **Custom hotkeys**: Shift+0–9 jump to nodes, services, pods, HelmReleases, Kustomizations
-- **Aliases**: `dp` → deployments, `sec` → secrets, `jo` → jobs, `cr` → clusterroles
-- **Debug plugin**: one keypress spawns a debug pod on a selected node with automatic cleanup
-- **Transparent skin**: inherits the terminal background
-
 ### WezTerm
 
 [WezTerm](https://wezfurlong.org/wezterm/) is my terminal emulator of choice — GPU-accelerated, cross-platform, configured in Lua.
@@ -108,7 +99,7 @@ Notable config:
 
 ### Claude Code
 
-[Claude Code](https://claude.ai/code) is Anthropic's CLI for Claude and a permanent fixture in my workflow — it sits in the right pane of the `dev` tmux window. I keep custom subagent definitions in `dot_claude/agents/`, which deploy to `~/.claude/agents/`. Each agent is a markdown file with YAML frontmatter declaring its name, model, and allowed tools, followed by a focused system prompt:
+[Claude Code](https://claude.ai/code) is Anthropic's CLI for Claude and a permanent fixture in my workflow — it sits in the right pane of the `dev` zellij tab. I keep custom subagent definitions in `dot_claude/agents/`, which deploy to `~/.claude/agents/`. Each agent is a markdown file with YAML frontmatter declaring its name, model, and allowed tools, followed by a focused system prompt:
 
 - **Coder** (Sonnet) — writes Terraform, Kubernetes manifests, Bash scripts, and Python tooling. Knows the conventions cold so I don't have to repeat them.
 - **Planner** (Opus) — researches the codebase and docs, identifies risks, produces an ordered implementation plan. Never touches code.
@@ -116,14 +107,24 @@ Notable config:
 
 The split between Planner and Coder mirrors the think-then-do discipline I try to apply manually — except now it's enforced by separate system prompts and model choices.
 
-### Tmux
+Alongside the agents, `dot_claude/skills/` holds skills that gate infra changes on specific tool invocations rather than relying on manual review steps:
 
-Tmux is the session layer. The `devops.sh` script builds a two-window layout:
+- `tf-fmt-validate`, `tf-plan-diff`, `cost-estimate` — Terraform format/validate, plan diff, and infracost estimate
+- `k8s-dry-run`, `rbac-diff` — Kubernetes/Helm server-side dry run and RBAC before/after diff
+- `policy-scan`, `secrets-scan` — tfsec/kube-score static scanning, gitleaks secret scanning
+- `shellcheck-gate` — shellcheck on any bash script I write or edit
+- `provider-docs-lookup` — fetch pinned-version docs for a Terraform provider resource, Kubernetes API object, or Helm chart
+
+They deploy to `~/.claude/skills/` the same way the agents do. Each one expects its underlying tool (`terraform`, `infracost`, `tfsec`, `kube-score`, `gitleaks`, `shellcheck`) on `PATH` via mise.
+
+### Zellij
+
+Zellij is the session layer. I set up `Ctrl+b` prefix mode (matching tmux muscle memory, built into Zellij) and a larger scrollback. The `devops.sh` script attaches to (or creates) a named session using the `devops` layout, a two-tab setup:
 
 - **dev**: Neovim on the left, Claude on the right
 - **ops**: k9s on top, a shell below
 
-Each pane launches its app as the top-level process (not via `send-keys`), with `remain-on-exit on`. When an app exits the pane turns dead instead of closing — `prefix + R` respawns the original command. Plugins via TPM: resurrect, continuum, yank, vim-tmux-navigator.
+Each pane launches its app directly as a `command` pane — no `remain-on-exit` config needed, Zellij already keeps the pane open when the command exits and re-runs it on `ENTER`. A `devops` fish function wraps `zellij attach --create <session> --default-layout devops`, keying the session name off the current directory when `$KUBECONFIG` is set.
 
 ---
 

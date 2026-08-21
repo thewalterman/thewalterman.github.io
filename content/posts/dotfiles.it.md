@@ -86,15 +86,6 @@ Uso [LazyVim](https://www.lazyvim.org/) come base e aggiungo un piccolo insieme 
 - **snacks** — fuzzy picker configurato per includere i file nascosti di default
 - **tokyonight** — tema in modalità trasparente, così si vede lo sfondo del terminale
 
-### k9s
-
-[k9s](https://k9scli.io/) è una TUI per Kubernetes. La mia configurazione aggiunge:
-
-- **Hotkey personalizzate**: Shift+0–9 saltano a nodi, servizi, pod, HelmRelease, Kustomization
-- **Alias**: `dp` → deployments, `sec` → secrets, `jo` → jobs, `cr` → clusterroles
-- **Plugin di debug**: un tasto avvia un pod di debug sul nodo selezionato con pulizia automatica
-- **Skin trasparente**: eredita lo sfondo del terminale
-
 ### WezTerm
 
 [WezTerm](https://wezfurlong.org/wezterm/) è il mio emulatore di terminale — accelerato via GPU, cross-platform, configurato in Lua.
@@ -108,7 +99,7 @@ Configurazione rilevante:
 
 ### Claude Code
 
-[Claude Code](https://claude.ai/code) è la CLI di Anthropic per Claude ed è una presenza fissa nel mio workflow — occupa il pannello destro della finestra tmux `dev`. Mantengo definizioni di subagenti personalizzati in `dot_claude/agents/`, che vengono deployati in `~/.claude/agents/`. Ogni agente è un file markdown con frontmatter YAML che dichiara nome, modello e strumenti consentiti, seguito da un system prompt mirato:
+[Claude Code](https://claude.ai/code) è la CLI di Anthropic per Claude ed è una presenza fissa nel mio workflow — occupa il pannello destro della tab zellij `dev`. Mantengo definizioni di subagenti personalizzati in `dot_claude/agents/`, che vengono deployati in `~/.claude/agents/`. Ogni agente è un file markdown con frontmatter YAML che dichiara nome, modello e strumenti consentiti, seguito da un system prompt mirato:
 
 - **Coder** (Sonnet) — scrive Terraform, manifest Kubernetes, script Bash e tooling Python. Conosce le convenzioni a memoria, così non devo ripeterle.
 - **Planner** (Opus) — esplora il codebase e la documentazione, identifica i rischi, produce un piano di implementazione ordinato. Non tocca mai il codice.
@@ -116,14 +107,24 @@ Configurazione rilevante:
 
 La separazione tra Planner e Coder rispecchia la disciplina "pensa prima, poi agisci" che cerco di applicare manualmente — solo che ora è imposta da system prompt separati e scelte di modello distinte.
 
-### Tmux
+Oltre agli agenti, `dot_claude/skills/` contiene skill che vincolano le modifiche infra a specifiche invocazioni di tool, invece di affidarsi a passaggi di revisione manuale:
 
-Tmux è il layer di sessione. Lo script `devops.sh` costruisce un layout a due finestre:
+- `tf-fmt-validate`, `tf-plan-diff`, `cost-estimate` — format/validate di Terraform, diff del plan e stima infracost
+- `k8s-dry-run`, `rbac-diff` — dry run server-side di Kubernetes/Helm e diff RBAC prima/dopo
+- `policy-scan`, `secrets-scan` — scansione statica tfsec/kube-score, scansione segreti con gitleaks
+- `shellcheck-gate` — shellcheck su ogni script bash che scrivo o modifico
+- `provider-docs-lookup` — recupera la documentazione della versione pinnata per una resource di un provider Terraform, un oggetto API Kubernetes o un chart Helm
+
+Vengono deployate in `~/.claude/skills/` allo stesso modo degli agenti. Ognuna richiede il proprio tool sottostante (`terraform`, `infracost`, `tfsec`, `kube-score`, `gitleaks`, `shellcheck`) su `PATH` tramite mise.
+
+### Zellij
+
+Zellij è il layer di sessione. Ho configurato la modalità prefisso `Ctrl+b` (per la muscle memory di tmux, già integrata in Zellij) e uno scrollback più ampio. Lo script `devops.sh` si aggancia a (o crea) una sessione con nome usando il layout `devops`, un setup a due tab:
 
 - **dev**: Neovim a sinistra, Claude a destra
 - **ops**: k9s in alto, una shell in basso
 
-Ogni pannello avvia la propria app come processo top-level (non via `send-keys`), con `remain-on-exit on`. Quando l'app termina, il pannello diventa "morto" invece di chiudersi — `prefix + R` lo fa ripartire con il comando originale. Plugin via TPM: resurrect, continuum, yank, vim-tmux-navigator.
+Ogni pannello avvia la propria app direttamente come `command` pane — nessuna configurazione di `remain-on-exit` necessaria, Zellij mantiene già il pannello aperto quando il comando termina e lo fa ripartire con `ENTER`. Una funzione fish `devops` avvolge `zellij attach --create <session> --default-layout devops`, usando come nome della sessione la directory corrente quando `$KUBECONFIG` è impostato.
 
 ---
 
