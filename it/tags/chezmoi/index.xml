@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Chezmoi on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/tags/chezmoi/</link>
+    <description>Recent content in Chezmoi on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Tue, 31 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/tags/chezmoi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I miei Dotfiles: un Ambiente di Sviluppo per il DevOps</title>
+      <link>https://thewalterman.github.io/it/posts/dotfiles/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/dotfiles/</guid>
+      <description>Come gestisco i miei dotfiles con chezmoi e la toolchain su cui mi sono assestato dopo anni di iterazioni.</description>
+    </item>
+  </channel>
+</rss>

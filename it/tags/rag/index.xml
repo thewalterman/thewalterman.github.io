@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Rag on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/tags/rag/</link>
+    <description>Recent content in Rag on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/tags/rag/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Un Wiki Che Si Scrive Da Solo: Una Knowledge Base Curata Da un LLM</title>
+      <link>https://thewalterman.github.io/it/posts/llm-wiki/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/llm-wiki/</guid>
+      <description>Un&amp;#39;alternativa al RAG: un wiki markdown persistente, mantenuto interamente da un LLM, che si interpone fra l&amp;#39;utente e le fonti grezze — con disciplina dello schema, un index e tre primitive semplici.</description>
+    </item>
+  </channel>
+</rss>

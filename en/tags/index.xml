@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/en/tags/</link>
+    <description>Recent content in Tags on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ai</title>
+      <link>https://thewalterman.github.io/en/tags/ai/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/ai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ansible</title>
+      <link>https://thewalterman.github.io/en/tags/ansible/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/ansible/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Homelab</title>
+      <link>https://thewalterman.github.io/en/tags/homelab/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/homelab/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>K3s</title>
+      <link>https://thewalterman.github.io/en/tags/k3s/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/k3s/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubernetes</title>
+      <link>https://thewalterman.github.io/en/tags/kubernetes/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Llm</title>
+      <link>https://thewalterman.github.io/en/tags/llm/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/llm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Podman</title>
+      <link>https://thewalterman.github.io/en/tags/podman/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/podman/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Rbac</title>
+      <link>https://thewalterman.github.io/en/tags/rbac/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/rbac/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Security</title>
+      <link>https://thewalterman.github.io/en/tags/security/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/security/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cloudnative-Pg</title>
+      <link>https://thewalterman.github.io/en/tags/cloudnative-pg/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/cloudnative-pg/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Envoy-Gateway</title>
+      <link>https://thewalterman.github.io/en/tags/envoy-gateway/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/envoy-gateway/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gitlab</title>
+      <link>https://thewalterman.github.io/en/tags/gitlab/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/gitlab/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Helmfile</title>
+      <link>https://thewalterman.github.io/en/tags/helmfile/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/helmfile/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Rustfs</title>
+      <link>https://thewalterman.github.io/en/tags/rustfs/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/rustfs/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Knowledge-Management</title>
+      <link>https://thewalterman.github.io/en/tags/knowledge-management/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/knowledge-management/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Markdown</title>
+      <link>https://thewalterman.github.io/en/tags/markdown/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/markdown/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Obsidian</title>
+      <link>https://thewalterman.github.io/en/tags/obsidian/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/obsidian/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Rag</title>
+      <link>https://thewalterman.github.io/en/tags/rag/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/rag/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Wiki</title>
+      <link>https://thewalterman.github.io/en/tags/wiki/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/wiki/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Automation</title>
+      <link>https://thewalterman.github.io/en/tags/automation/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/automation/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Helm</title>
+      <link>https://thewalterman.github.io/en/tags/helm/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/helm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>K3d</title>
+      <link>https://thewalterman.github.io/en/tags/k3d/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/k3d/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>N8n</title>
+      <link>https://thewalterman.github.io/en/tags/n8n/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/n8n/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Chezmoi</title>
+      <link>https://thewalterman.github.io/en/tags/chezmoi/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/chezmoi/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Devops</title>
+      <link>https://thewalterman.github.io/en/tags/devops/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/devops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Dotfiles</title>
+      <link>https://thewalterman.github.io/en/tags/dotfiles/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/dotfiles/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fish</title>
+      <link>https://thewalterman.github.io/en/tags/fish/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/fish/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mise</title>
+      <link>https://thewalterman.github.io/en/tags/mise/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/mise/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Neovim</title>
+      <link>https://thewalterman.github.io/en/tags/neovim/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/neovim/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tooling</title>
+      <link>https://thewalterman.github.io/en/tags/tooling/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/tooling/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Flux</title>
+      <link>https://thewalterman.github.io/en/tags/flux/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/flux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gitops</title>
+      <link>https://thewalterman.github.io/en/tags/gitops/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/gitops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Hub-Spoke</title>
+      <link>https://thewalterman.github.io/en/tags/hub-spoke/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/hub-spoke/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Multi-Cluster</title>
+      <link>https://thewalterman.github.io/en/tags/multi-cluster/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/tags/multi-cluster/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

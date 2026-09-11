@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Blog on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/posts/</link>
+    <description>Recent content in Blog on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Un Bot AI Sandboxato per l&#39;Homelab</title>
+      <link>https://thewalterman.github.io/it/posts/hermes-agent/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/hermes-agent/</guid>
+      <description>Installare Hermes Agent — un assistente AI self-hosted, raggiungibile via app di chat — sul nodo dell&amp;#39;homelab tramite Ansible, e poi togliergli quasi tutto ciò che poteva fare di sbagliato: un toolset ridotto all&amp;#39;essenziale, un sandbox Podman rootless per l&amp;#39;esecuzione dei comandi, e un&amp;#39;identità Kubernetes dedicata.</description>
+    </item>
+    <item>
+      <title>Self-Hosting di GitLab CE su Kubernetes con Helmfile</title>
+      <link>https://thewalterman.github.io/it/posts/gitlab/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/gitlab/</guid>
+      <description>Un deployment production-grade di GitLab CE su Kubernetes con Helmfile, Envoy Gateway, CloudNative-PG e RustFS.</description>
+    </item>
+    <item>
+      <title>Un Wiki Che Si Scrive Da Solo: Una Knowledge Base Curata Da un LLM</title>
+      <link>https://thewalterman.github.io/it/posts/llm-wiki/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/llm-wiki/</guid>
+      <description>Un&amp;#39;alternativa al RAG: un wiki markdown persistente, mantenuto interamente da un LLM, che si interpone fra l&amp;#39;utente e le fonti grezze — con disciplina dello schema, un index e tre primitive semplici.</description>
+    </item>
+    <item>
+      <title>Eseguire n8n su un cluster Kubernetes locale: un setup homelab di livello produzione</title>
+      <link>https://thewalterman.github.io/it/posts/n8n/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/n8n/</guid>
+      <description>Come deployare n8n in un cluster Kubernetes locale con queue mode, Helmfile, Envoy Gateway, CNPG e Valkey — con un servizio di inferenza LLM locale — con due comandi.</description>
+    </item>
+    <item>
+      <title>I miei Dotfiles: un Ambiente di Sviluppo per il DevOps</title>
+      <link>https://thewalterman.github.io/it/posts/dotfiles/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/dotfiles/</guid>
+      <description>Come gestisco i miei dotfiles con chezmoi e la toolchain su cui mi sono assestato dopo anni di iterazioni.</description>
+    </item>
+    <item>
+      <title>Gestire Più Cluster Kubernetes con FluxCD e il Modello Hub-Spoke</title>
+      <link>https://thewalterman.github.io/it/posts/multicluster/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/multicluster/</guid>
+      <description>Come gestire più cluster Kubernetes da un unico repository Git usando FluxCD e una topologia hub-spoke.</description>
+    </item>
+    <item>
+      <title>Costruire un Homelab Production-Grade con Kubernetes, GitOps e Sicurezza Zero-Trust</title>
+      <link>https://thewalterman.github.io/it/posts/homelab/</link>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/homelab/</guid>
+      <description>Come costruire un homelab production-grade con uno stack applicativo completamente protetto da OIDC usando GitOps e principi zero-trust.</description>
+    </item>
+  </channel>
+</rss>

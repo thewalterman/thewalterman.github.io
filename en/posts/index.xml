@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Blog on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/en/posts/</link>
+    <description>Recent content in Blog on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Sandboxed AI Ops Bot for the Homelab</title>
+      <link>https://thewalterman.github.io/en/posts/hermes-agent/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/hermes-agent/</guid>
+      <description>Installing Hermes Agent — a self-hosted, chat app reachable AI ops assistant — on the homelab node via Ansible, then taking away almost everything it could do wrong: a trimmed-down toolset, a rootless Podman sandbox for command execution, and a dedicated Kubernetes identity.</description>
+    </item>
+    <item>
+      <title>Self-Hosting GitLab CE on Kubernetes with Helmfile</title>
+      <link>https://thewalterman.github.io/en/posts/gitlab/</link>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/gitlab/</guid>
+      <description>A production-grade GitLab CE deployment on Kubernetes using Helmfile, Envoy Gateway, CloudNative-PG, and RustFS.</description>
+    </item>
+    <item>
+      <title>A Wiki That Writes Itself: An LLM-Curated Knowledge Base</title>
+      <link>https://thewalterman.github.io/en/posts/llm-wiki/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/llm-wiki/</guid>
+      <description>An alternative to RAG: a persistent markdown wiki, maintained entirely by an LLM, sitting between the user and the raw sources — with schema discipline, an index, and three simple primitives.</description>
+    </item>
+    <item>
+      <title>Running n8n on a Local Kubernetes Cluster: A Production-Grade Homelab Setup</title>
+      <link>https://thewalterman.github.io/en/posts/n8n/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/n8n/</guid>
+      <description>How to deploy n8n in a production-grade local Kubernetes cluster using queue mode, Helmfile, Envoy Gateway, CNPG, and Valkey — with a local LLM inference service — stood up with two commands.</description>
+    </item>
+    <item>
+      <title>My Dotfiles: A DevOps-Focused Development Environment</title>
+      <link>https://thewalterman.github.io/en/posts/dotfiles/</link>
+      <pubDate>Tue, 31 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/dotfiles/</guid>
+      <description>How I manage my dotfiles with chezmoi and the opinionated toolchain I&amp;#39;ve settled on after years of iteration.</description>
+    </item>
+    <item>
+      <title>Managing Multiple Kubernetes Clusters with FluxCD and a Hub-Spoke Model</title>
+      <link>https://thewalterman.github.io/en/posts/multicluster/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/multicluster/</guid>
+      <description>How to manage multiple Kubernetes clusters from a single Git repository using FluxCD and a hub-spoke topology.</description>
+    </item>
+    <item>
+      <title>Building a Production-Grade Homelab with Kubernetes, GitOps, and Zero-Trust Security</title>
+      <link>https://thewalterman.github.io/en/posts/homelab/</link>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/homelab/</guid>
+      <description>How to build a production-grade homelab with full OIDC-secured application stack using GitOps and zero-trust principles.</description>
+    </item>
+  </channel>
+</rss>
