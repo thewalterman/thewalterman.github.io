@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://thewalterman.github.io/sitemap.xml

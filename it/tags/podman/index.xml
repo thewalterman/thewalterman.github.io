@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Podman on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/tags/podman/</link>
+    <description>Recent content in Podman on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/tags/podman/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Un Bot AI Sandboxato per l&#39;Homelab</title>
+      <link>https://thewalterman.github.io/it/posts/hermes-agent/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/hermes-agent/</guid>
+      <description>Installare Hermes Agent — un assistente AI self-hosted, raggiungibile via app di chat — sul nodo dell&amp;#39;homelab tramite Ansible, e poi togliergli quasi tutto ciò che poteva fare di sbagliato: un toolset ridotto all&amp;#39;essenziale, un sandbox Podman rootless per l&amp;#39;esecuzione dei comandi, e un&amp;#39;identità Kubernetes dedicata.</description>
+    </item>
+  </channel>
+</rss>

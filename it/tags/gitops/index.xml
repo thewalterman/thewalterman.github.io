@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Gitops on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/tags/gitops/</link>
+    <description>Recent content in Gitops on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Mon, 30 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/tags/gitops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gestire Più Cluster Kubernetes con FluxCD e il Modello Hub-Spoke</title>
+      <link>https://thewalterman.github.io/it/posts/multicluster/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/multicluster/</guid>
+      <description>Come gestire più cluster Kubernetes da un unico repository Git usando FluxCD e una topologia hub-spoke.</description>
+    </item>
+    <item>
+      <title>Costruire un Homelab Production-Grade con Kubernetes, GitOps e Sicurezza Zero-Trust</title>
+      <link>https://thewalterman.github.io/it/posts/homelab/</link>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/homelab/</guid>
+      <description>Come costruire un homelab production-grade con uno stack applicativo completamente protetto da OIDC usando GitOps e principi zero-trust.</description>
+    </item>
+  </channel>
+</rss>

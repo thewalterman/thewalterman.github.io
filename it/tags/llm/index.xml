@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Llm on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/it/tags/llm/</link>
+    <description>Recent content in Llm on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>it-it</language>
+    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/it/tags/llm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Un Bot AI Sandboxato per l&#39;Homelab</title>
+      <link>https://thewalterman.github.io/it/posts/hermes-agent/</link>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/hermes-agent/</guid>
+      <description>Installare Hermes Agent — un assistente AI self-hosted, raggiungibile via app di chat — sul nodo dell&amp;#39;homelab tramite Ansible, e poi togliergli quasi tutto ciò che poteva fare di sbagliato: un toolset ridotto all&amp;#39;essenziale, un sandbox Podman rootless per l&amp;#39;esecuzione dei comandi, e un&amp;#39;identità Kubernetes dedicata.</description>
+    </item>
+    <item>
+      <title>Un Wiki Che Si Scrive Da Solo: Una Knowledge Base Curata Da un LLM</title>
+      <link>https://thewalterman.github.io/it/posts/llm-wiki/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/llm-wiki/</guid>
+      <description>Un&amp;#39;alternativa al RAG: un wiki markdown persistente, mantenuto interamente da un LLM, che si interpone fra l&amp;#39;utente e le fonti grezze — con disciplina dello schema, un index e tre primitive semplici.</description>
+    </item>
+    <item>
+      <title>Eseguire n8n su un cluster Kubernetes locale: un setup homelab di livello produzione</title>
+      <link>https://thewalterman.github.io/it/posts/n8n/</link>
+      <pubDate>Thu, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/it/posts/n8n/</guid>
+      <description>Come deployare n8n in un cluster Kubernetes locale con queue mode, Helmfile, Envoy Gateway, CNPG e Valkey — con un servizio di inferenza LLM locale — con due comandi.</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Hub-Spoke on thewalterman&#39;s blog</title>
+    <link>https://thewalterman.github.io/en/tags/hub-spoke/</link>
+    <description>Recent content in Hub-Spoke on thewalterman&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 30 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://thewalterman.github.io/en/tags/hub-spoke/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Managing Multiple Kubernetes Clusters with FluxCD and a Hub-Spoke Model</title>
+      <link>https://thewalterman.github.io/en/posts/multicluster/</link>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://thewalterman.github.io/en/posts/multicluster/</guid>
+      <description>How to manage multiple Kubernetes clusters from a single Git repository using FluxCD and a hub-spoke topology.</description>
+    </item>
+  </channel>
+</rss>
